@@ -6,6 +6,21 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.1] - 2025-11-24
+
+### Added
+
+- `paths` to the `pull_request` event to ensure that the workflow is only
+  triggered when changes are made for the defined paths.
+- `fetch-depth: 0` to the `checkout` action to ensure that the entire repository
+  is cloned, which is important for correct path detection in PRs from forks.
+- `cache: pnpm` to the `setup-node` action to speed up the workflow.
+- A step to install `pnpm` to match the version used in the project.
+
+### Changed
+
+- Move contribution guide to dedicated file and reference it in `README.md`.
+
 ## [1.0.0] - 2025-11-24
 
 **Initial release of Expressure** – a modern, production-ready boilerplate for
