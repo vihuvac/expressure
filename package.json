@@ -1,6 +1,6 @@
 {
   "name": "expressure",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This is Node.js API based on the OpenAPI Specification.",
   "main": "src/app.ts",
   "scripts": {
