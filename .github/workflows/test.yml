@@ -4,7 +4,13 @@ on:
   pull_request:
     branches:
       - main
-      - development
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+  push:
+    branches:
+      - main
     paths:
       - 'src/**'
       - 'package.json'

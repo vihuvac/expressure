@@ -6,6 +6,17 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.2] - 2025-11-24
+
+### Added
+
+- Add `push` trigger alongside `pull_request` to run tests on merge to main
+  (ensures Codecov badge for main stays up-to-date).
+
+### Changed
+
+- Drop development branch references from the workflow.
+
 ## [1.0.1] - 2025-11-24
 
 ### Added
