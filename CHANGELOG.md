@@ -15,6 +15,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `fetch-depth: 0` to the `checkout` action to ensure that the entire repository
   is cloned, which is important for correct path detection in PRs from forks.
 - `cache: pnpm` to the `setup-node` action to speed up the workflow.
+- A step to install `pnpm` to match the version used in the project.
 
 ### Changed
 
