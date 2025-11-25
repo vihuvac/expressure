@@ -1,0 +1,21 @@
+# Ignore everything by default
+*
+
+# Whitelist application code
+!package*.json
+!pnpm-lock.yaml
+!tsconfig.json
+!types.d.ts
+!src/
+!config/
+
+# Whitelist development tools
+!.eslintrc
+!jest.config.*
+!.prettierrc*
+!.jsdoc*
+!.lintstagedrc
+
+# Whitelist additional development files that might be needed
+!.husky/
+!sonar-project.properties

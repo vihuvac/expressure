@@ -1,0 +1,8 @@
+{
+  "port": 9889,
+  "apiSpec": "app/specs/openapi.yaml",
+  "corsOrigin": [
+    "/\\.vercel\\.app$/",
+    "/^http:\\/\\/localhost:\\d+$/"
+  ]
+}

@@ -1,0 +1,74 @@
+openapi: 3.1.1
+info:
+  title: Expressure - OpenAPI version 3.1.1
+  description: |-
+    **Expressure** is a modern boilerplate for building scalable `Node.js` APIs with `Express.js`, TypeScript, OpenAPI, and Docker.
+    Whether you're crafting a monolith or spinning up microservices, **Expressure** gives you a clean, consistent
+    foundation with smart defaults and zero friction.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: hello@vihuvac.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: http://localhost:9889/api/v1
+    description: Local development server
+tags:
+  - name: health
+    description: Liveness and Readiness Probes inspired by Kubernetes
+    externalDocs:
+      description: Find out more
+      url: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes
+paths:
+  /health/liveness:
+    get:
+      tags:
+        - health
+      summary: Get the API liveness status
+      operationId: checkLiveness
+      x-eov-operation-handler: healthChecks.controller
+      responses:
+        200:
+          description: The API is alive
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+  /health/readiness:
+    get:
+      tags:
+        - health
+      summary: Get the API readiness status
+      operationId: checkReadiness
+      x-eov-operation-handler: healthChecks.controller
+      responses:
+        200:
+          description: The API is ready to handle requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+components:
+  schemas:
+    APIResponse:
+      type: object
+      properties:
+        message:
+          type: string

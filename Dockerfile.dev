@@ -1,0 +1,39 @@
+ARG ALPINE_VERSION=3.22
+ARG NODE_VERSION=22.21.1
+
+# LTS Image.
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
+
+# Create app directory inside the image.
+WORKDIR /app
+
+# Install su-exec utility (Alpine doesn't have it by default).
+RUN apk add --no-cache su-exec
+
+# Enable Corepack globally for the Node.js installation.
+# This ensures `pnpm` is available system-wide.
+RUN corepack enable && \
+  mkdir -p /home/node/.cache/node/corepack && \
+  chown -R node:node /home/node/.cache && \
+  # Enable and prepare corepack AS the node user.
+  su-exec node corepack enable && \
+  su-exec node corepack prepare pnpm@10.23.0 --activate
+
+# Copy package and lock files.
+COPY --chown=node:node package.json ./
+COPY --chown=node:node pnpm-lock.yaml ./
+
+# To bundle the app's source code inside the Docker image.
+COPY --chown=node:node . .
+
+# Install app dependencies (including dev).
+RUN pnpm install --frozen-lockfile
+
+# Change user to run app.
+USER node
+
+# Expose the image ports for accessing through them outside the image.
+EXPOSE 9889
+
+# Start running the app.
+CMD [ "pnpm", "run", "debug" ]

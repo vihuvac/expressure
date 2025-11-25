@@ -1,0 +1,34 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    // Debug the API via Docker.
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Docker",
+      "protocol": "auto",
+      "port": 9888,
+      "restart": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app"
+    },
+    // Debug the API Locally.
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Local Nodemon",
+      "protocol": "auto",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "debug"],
+      "restart": true,
+      "port": 9888,
+      "console": "integratedTerminal",
+      "localRoot": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}

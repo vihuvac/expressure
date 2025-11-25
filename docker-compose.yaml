@@ -1,0 +1,18 @@
+services:
+  api:
+    container_name: expressure
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+      - /app/build
+      - /app/node_modules
+    ports:
+      - 9889:9889 # API port
+      - 9888:9888 # Debugging port
+    env_file:
+      - ./.env
+    environment:
+      NODE_ENV: $NODE_ENV
+    restart: always

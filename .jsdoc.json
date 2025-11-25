@@ -1,0 +1,40 @@
+{
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc"
+    ]
+  },
+  "source": {
+    "include": [
+      "src/app",
+      "package.json",
+      "README.md"
+    ],
+    "includePattern": "\\.(ts|tsx)$",
+    "excludePattern": "(node_modules|.husky|build|docs|tests|src/app/controllers)"
+  },
+  "plugins": [
+    "plugins/markdown",
+    "jsdoc-mermaid",
+    "./node_modules/better-docs/typescript"
+  ],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": true,
+    "useLongnameInNav": false,
+    "showInheritedInNav": true,
+    "search": true,
+    "better-docs": {
+      "name": "Expressure"
+    }
+  },
+  "opts": {
+    "destination": "./docs/",
+    "encoding": "utf8",
+    "private": true,
+    "recurse": true,
+    "template": "./node_modules/better-docs",
+    "readme": "./README.md"
+  }
+}
