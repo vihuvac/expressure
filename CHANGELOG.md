@@ -6,7 +6,21 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.4] - 2025-12-20
+
+There is not a specific ticket for these changes.
+
+### Added
+
+- A brief reference/description in the changelog for potential tickets/pull requests (PRs) linked to each release.
+
+### Fixed
+
+- Templates to report issues (required property under validations).
+
 ## [1.0.3] - 2025-12-20
+
+There is not a specific ticket for these changes.
 
 ### Added
 
@@ -23,6 +37,8 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.0.2] - 2025-11-24
 
+There is not a specific ticket for these changes.
+
 ### Added
 
 - Add `push` trigger alongside `pull_request` to run tests on merge to main
@@ -33,6 +49,8 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Drop development branch references from the workflow.
 
 ## [1.0.1] - 2025-11-24
+
+There is not a specific ticket for these changes.
 
 ### Added
 
