@@ -10,6 +10,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- A code of conduct document.
 - Type definitions for packages that do not provide them (`swagger-client`, and `swagger-model-validator`).
 
 ### Changed
