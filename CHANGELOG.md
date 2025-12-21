@@ -6,6 +6,21 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-12-20
+
+### Added
+
+- A code of conduct document.
+- A security policy document.
+- Type definitions for packages that do not provide them (`swagger-client`, and `swagger-model-validator`).
+- Issue templates to report bugs and security vulnerabilities.
+
+### Changed
+
+- Updated NPM dependencies to their latest versions.
+- Updated the contact information for the developer.
+- Updated the README.md file to enhance the references to resources.
+
 ## [1.0.2] - 2025-11-24
 
 ### Added
