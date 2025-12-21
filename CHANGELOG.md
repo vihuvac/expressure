@@ -6,6 +6,17 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.0.3] - 2025-12-20
+
+### Added
+
+- Type definitions for packages that do not provide them (`swagger-client`, and `swagger-model-validator`).
+
+### Changed
+
+- Updated NPM dependencies to their latest versions.
+- Updated the contact information for the developer.
+
 ## [1.0.2] - 2025-11-24
 
 ### Added
