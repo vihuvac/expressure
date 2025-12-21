@@ -13,6 +13,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A code of conduct document.
 - A security policy document.
 - Type definitions for packages that do not provide them (`swagger-client`, and `swagger-model-validator`).
+- Issue templates to report bugs and security vulnerabilities.
 
 ### Changed
 
