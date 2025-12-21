@@ -12,6 +12,9 @@
     <br/>
     <img src="https://github.com/vihuvac/expressure/actions/workflows/test.yml/badge.svg" alt="Tests Status" />
     <img src="https://codecov.io/gh/vihuvac/expressure/branch/main/graph/badge.svg" alt="Coverage" />
+    <br/>
+    <img src="https://img.shields.io/badge/Security%20Policy-Active-success" alt="Security Policy" />
+    <img src="https://img.shields.io/badge/Code%20of%20Conduct-Contributor%20Covenant-yellow" alt="Code of Conduct" />
   </p>
 </div>
 
@@ -194,8 +197,16 @@ file for more details.
 
 ## Additional Resources
 
+### Project
+
 - [Changelog](./CHANGELOG.md)
+- [Security Policy](./SECURITY.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+
+### Tools
+
 - [JSDoc](https://github.com/jsdoc/jsdoc)
 - [OpenAPI Specification v3](https://swagger.io/specification/v3/)
 - [swagger-client](https://github.com/swagger-api/swagger-js)
 - [swagger-ui-express](https://github.com/scottie1984/swagger-ui-express)
+- [Express OpenAPI Validator](https://cdimascio.github.io/express-openapi-validator-documentation/)

@@ -19,6 +19,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Updated NPM dependencies to their latest versions.
 - Updated the contact information for the developer.
+- Updated the README.md file to enhance the references to resources.
 
 ## [1.0.2] - 2025-11-24
 
