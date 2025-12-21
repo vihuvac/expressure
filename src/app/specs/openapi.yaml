@@ -7,7 +7,8 @@ info:
     foundation with smart defaults and zero friction.
   termsOfService: http://swagger.io/terms/
   contact:
-    email: hello@vihuvac.com
+    name: Víctor Hugo Valle Castillo
+    url: https://vihuvac.com
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
