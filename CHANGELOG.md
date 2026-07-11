@@ -13,6 +13,7 @@ There is not a specific ticket for these changes.
 ### Added
 
 - `pnpm-workspace.yaml` for pnpm 11 settings (`allowBuilds`, dependency overrides).
+- `tsconfig.eslint.json` so typed ESLint covers tests while the build `tsconfig` excludes them.
 - Pure helpers `resolveLogLevel` and `isOriginAllowed` for testable logger and CORS logic.
 - Jest scripts for CI and watch workflows (`test:ci`, `test:watch`, `test:watch:changed`).
 - `jest-watch-typeahead` for faster interactive test filtering.
@@ -21,6 +22,8 @@ There is not a specific ticket for these changes.
 ### Changed
 
 - Upgraded the toolchain to Node.js 24.18.0, pnpm 11.11.0, TypeScript 6.0.3, and ESLint 9.39.x.
+- Updated the GitHub Actions test workflow to Node.js 24.18.0 and let `pnpm/action-setup`
+  use the pnpm version from `package.json` `packageManager` (single source of truth).
 - Updated runtime dependencies: `config` 4.4.2, `cors` 2.8.6, `date-fns` 4.4.0,
   `express-openapi-validator` 5.6.2, `helmet` 8.2.0, `js-yaml` 5.2.1, `module-alias` 2.3.4,
   `pino` 10.3.1, and `swagger-client` 3.37.5.
@@ -30,10 +33,12 @@ There is not a specific ticket for these changes.
 - Unified path aliases to `@/*` (TypeScript `paths`, Jest `moduleNameMapper`, and `module-alias`).
 - Migrated TypeScript config off deprecated `moduleResolution: "node"` / `baseUrl` to
   `moduleResolution: "bundler"` with self-contained `paths`.
+- Scoped the build `tsconfig` to app sources (`rootDir` / `include`) so `tsc` emits `build/app.js`.
+- Pointed ESLint typed linting at `tsconfig.eslint.json` instead of the build project.
 - Removed barrel `index.ts` re-exports under `src/app/*` in favor of direct `@/app/...` imports.
 - Removed deprecated `@types/config` (the `config` package ships its own types).
-- Hardened Docker builds: Node/Alpine/pnpm bumps, copy `pnpm-workspace.yaml`, and expand
-  `.dockerignore` whitelists for workspace and tooling files.
+- Hardened Docker builds: Node/Alpine/pnpm bumps, copy `pnpm-workspace.yaml`, set production
+  `WORKDIR`, and expand `.dockerignore` whitelists for workspace and tooling files.
 - Improved Jest defaults (V8 coverage, parallel workers locally, CI memory limits, typeahead watch plugins).
 - Raised unit-test coverage to 100% across application source files.
 
