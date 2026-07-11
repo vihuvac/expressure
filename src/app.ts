@@ -4,6 +4,7 @@
 import compression from 'compression';
 import config from 'config';
 import cookieParser from 'cookie-parser';
+import type { Application, NextFunction, Request, Response } from 'express';
 import express from 'express';
 import httpContext from 'express-http-context';
 import * as OpenApiValidator from 'express-openapi-validator';
@@ -12,20 +13,18 @@ import helmet from 'helmet';
 import yaml from 'js-yaml';
 import path from 'path';
 import swaggerUI, { type JsonObject } from 'swagger-ui-express';
-
 import 'module-alias/register';
 
-import { logger } from '@libs';
-import { corsMiddleware, expressLogger, handleErrors, sanitizeBody } from '@middlewares';
-import type { Application, NextFunction, Request, Response } from 'express';
+import { apiSettings } from '@/app/constants/miscs.constant';
+import { logger } from '@/app/libs/logger.lib';
+import { corsMiddleware } from '@/app/middlewares/cors.middleware';
+import { handleErrors } from '@/app/middlewares/errors.middleware';
+import { expressLogger } from '@/app/middlewares/expressLogger.middleware';
+import { sanitizeBody } from '@/app/middlewares/sanitizeBody.middleware';
 
 type MiddlewareFunction = (req: Request, res: Response, next: NextFunction) => void;
 
-// Get values from environment variables.
-const { NODE_ENV } = process.env;
-
-// Get defined configs to run the app.
-const port = config.get('port');
+// Get the API specification file path.
 const apiSpec = path.join(__dirname, config.get('apiSpec'));
 
 // Create the express app.
@@ -38,7 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(sanitizeBody);
 app.use(corsMiddleware);
 
-if (process.env.NODE_ENV === 'production') {
+if (apiSettings.environment === 'production') {
   app.use(helmet());
   app.use(compression());
 }
@@ -46,10 +45,9 @@ if (process.env.NODE_ENV === 'production') {
 app.use(expressLogger);
 app.use(httpContext.middleware as unknown as MiddlewareFunction);
 
-// Enable the Swagger UI only for the development environment.
-if (NODE_ENV !== 'production') {
-  // Just log the Swagger UI URL only for the development environment.
-  logger.info(`Swagger-ui is available on http://localhost:${port}/api/docs`);
+// Enable the Swagger UI only if ENABLE_API_DOCS is set to true.
+if (apiSettings.enableApiDocs === true) {
+  logger.info(`Swagger-ui is available on http://localhost:${apiSettings.port}/api/docs`);
 
   // Settings for enabling the Swagger UI.
   const swaggerUIOptions = {
@@ -74,6 +72,8 @@ app.use(
 // Custom error handler middleware.
 app.use(handleErrors);
 
-app.listen(port, () =>
-  logger.info(`The app is running on port ${port} (http://localhost:${port}/api/v1)`),
+app.listen(apiSettings.port, '0.0.0.0', () =>
+  logger.info(
+    `The app is running on port ${apiSettings.port} (http://localhost:${apiSettings.port}/api/v1)`,
+  ),
 );

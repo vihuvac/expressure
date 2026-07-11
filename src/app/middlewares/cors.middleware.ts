@@ -47,6 +47,21 @@ const formatAcceptedOrigins = (): (string | RegExp)[] => {
 };
 
 /**
+ * @func isOriginAllowed
+ * @description Returns whether a request origin matches the CORS whitelist.
+ * Supports exact string matches and `RegExp` patterns.
+ *
+ * Pure function — unit-testable without Express or the `cors` package.
+ *
+ * @param {string} origin                     The request `Origin` header value.
+ * @param {Array<string|RegExp>} whitelist    Allowed origins from config.
+ *
+ * @returns {boolean} `true` when the origin is permitted.
+ */
+export const isOriginAllowed = (origin: string, whitelist: (string | RegExp)[]): boolean =>
+  whitelist.some((item) => (item instanceof RegExp ? item.test(origin) : item === origin));
+
+/**
  * @func originHandler
  * @description Callback function to handle the origin verification.
  *
@@ -59,24 +74,12 @@ const formatAcceptedOrigins = (): (string | RegExp)[] => {
  * @returns {void} The callback function to be executed.
  */
 const originHandler: CustomOrigin = (origin, callback) => {
-  const whitelist = formatAcceptedOrigins();
-  const isDevelopment = process.env.NODE_ENV === 'development';
-
-  // In development: Allow requests without origin (Postman, curl, etc.).
-  if (isDevelopment && !origin) {
+  // Allow requests without origin (like mobile apps, curl, or health checks).
+  if (!origin) {
     return callback(null, true);
   }
 
-  // Require origin header for security and check whitelist.
-  // Check if origin matches any string or regex pattern.
-  const isAllowed = whitelist.some((item) => {
-    if (item instanceof RegExp) {
-      return origin ? item.test(origin) : false;
-    }
-    return item === origin;
-  });
-
-  if (isAllowed) {
+  if (isOriginAllowed(origin, formatAcceptedOrigins())) {
     return callback(null, true);
   }
 
@@ -91,7 +94,7 @@ const originHandler: CustomOrigin = (origin, callback) => {
  */
 const createCorsOptions = (): CorsOptions => ({
   origin: originHandler,
-  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE', 'HEAD'],
   allowedHeaders: ['Accept', 'Authorization', 'Content-Type', 'Origin', 'X-Requested-With'],
   optionsSuccessStatus: StatusCodes.OK,
   credentials: true,
