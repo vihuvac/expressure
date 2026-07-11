@@ -1,10 +1,11 @@
 /**
  * Required Modules.
  */
-import { pinoLogger } from '@libs';
 import type { Request, Response } from 'express';
 import httpContext from 'express-http-context';
 import pinoHttp, { type HttpLogger } from 'pino-http';
+
+import { pinoLogger } from '@/app/libs/logger.lib';
 
 /**
  * @type ResponseLocals

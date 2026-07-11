@@ -1,10 +1,11 @@
 /**
  * Required Modules.
  */
-import { packageInfo } from '@constants';
 import { format } from 'date-fns';
 import httpContext from 'express-http-context';
-import pino, { type Logger as PinoBaseLogger } from 'pino';
+import pino, { type Logger as PinoBaseLogger, stdSerializers } from 'pino';
+
+import { apiSettings, packageInfo } from '@/app/constants/miscs.constant';
 
 /**
  * @type LogOptions
@@ -155,6 +156,20 @@ const mixin = () => {
 };
 
 /**
+ * @func resolveLogLevel
+ * @description Maps the runtime environment to a Pino log level.
+ * Production stays quieter (`info`); every other environment enables `debug`.
+ *
+ * Pure function — safe to unit-test without reloading modules or mutating process env.
+ *
+ * @param {string | undefined} environment Value of `NODE_ENV` / `apiSettings.environment`.
+ *
+ * @returns {'info' | 'debug'} The Pino level to use.
+ */
+export const resolveLogLevel = (environment: string | undefined): 'info' | 'debug' =>
+  environment === 'production' ? 'info' : 'debug';
+
+/**
  * @type {PinoBaseLogger}
  * @constant pinoLogger
  * @description Core Pino logger instance configured for structured JSON output with async logging.
@@ -162,7 +177,7 @@ const mixin = () => {
  */
 export const pinoLogger: PinoBaseLogger = pino(
   {
-    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    level: resolveLogLevel(apiSettings.environment),
     timestamp: () => `,"time":"${format(new Date(), 'yyyy-MM-dd HH:mm:ss.SSS')}"`,
     formatters: {
       level: (label) => ({ level: label }),
@@ -208,11 +223,16 @@ const createLogHandler =
       }
     } else {
       // Handle object input
-      const { message, data, ...rest } = arg1;
-      const logObj =
+      const { message, data, error, ...rest } = arg1;
+      const logObj: Record<string, unknown> =
         data !== null && typeof data === 'object' && !Array.isArray(data)
           ? { ...data, ...rest }
           : { ...rest };
+
+      if (error) {
+        logObj.error = stdSerializers.err(error as Error);
+      }
+
       if (message && typeof message === 'string') {
         logMethod(logObj, message);
       } else {

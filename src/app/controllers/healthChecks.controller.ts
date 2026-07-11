@@ -14,7 +14,7 @@ import { StatusCodes } from 'http-status-codes';
  * @return {object} An object with a message indicating the liveness status.
  */
 export const checkLiveness = (_req: Request, res: Response) =>
-  res.status(StatusCodes.OK).send({ status: 'ok' });
+  res.status(StatusCodes.OK).send({ message: 'The API is alive and running.' });
 
 /**
  * @func checkReadiness
@@ -26,4 +26,4 @@ export const checkLiveness = (_req: Request, res: Response) =>
  * @return {object} An object with a message indicating the readiness status.
  */
 export const checkReadiness = (_req: Request, res: Response) =>
-  res.status(StatusCodes.OK).send({ status: 'ok' });
+  res.status(StatusCodes.OK).send({ message: 'The API is ready to handle requests.' });

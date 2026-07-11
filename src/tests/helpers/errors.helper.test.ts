@@ -1,9 +1,10 @@
 /**
  * Required modules.
  */
-import { CustomError, errorHandler } from '@helpers/errors.helper';
 import { StatusCodes } from 'http-status-codes';
 import { createResponse } from 'node-mocks-http';
+
+import { CustomError, errorHandler } from '@/app/helpers/errors.helper';
 
 describe('Testing Errors Helper', () => {
   afterEach(() => {
@@ -62,6 +63,36 @@ describe('Testing Errors Helper', () => {
 
       const mockResponse = {
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+        data: {
+          message,
+        },
+      };
+      const res = createResponse();
+      res.status(mockResponse.statusCode);
+
+      // Act
+      errorHandler(error, res);
+
+      // Assert
+      expect(res._getStatusCode()).toBe(mockResponse.statusCode);
+      expect(res._getData()).toEqual(
+        expect.objectContaining({
+          message: expect.any(String),
+        }),
+      );
+      expect(res._getData().message).toBe(mockResponse.data.message);
+    });
+
+    it('Must return an error object with status property', () => {
+      // Arrange
+      const message = 'Validation error';
+      const error = {
+        status: StatusCodes.BAD_REQUEST,
+        message,
+      };
+
+      const mockResponse = {
+        statusCode: StatusCodes.BAD_REQUEST,
         data: {
           message,
         },

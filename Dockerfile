@@ -1,5 +1,5 @@
-ARG ALPINE_VERSION=3.22
-ARG NODE_VERSION=22.21.1
+ARG ALPINE_VERSION=3.23
+ARG NODE_VERSION=24.18.0
 
 # LTS Image builder.
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
@@ -10,10 +10,11 @@ WORKDIR /app
 # Copy package and lock files.
 COPY --chown=node:node package.json ./
 COPY --chown=node:node pnpm-lock.yaml ./
+COPY --chown=node:node pnpm-workspace.yaml ./
 
 # To bundle the app's source code inside the Docker image.
 COPY --chown=node:node tsconfig.json ./
-COPY --chown=node:node types.d.ts ./
+COPY --chown=node:node ./@types ./@types
 COPY --chown=node:node ./config ./config
 COPY --chown=node:node ./src/app ./src/app
 COPY --chown=node:node ./src/app.ts ./src/app.ts
@@ -28,6 +29,9 @@ RUN pnpm run build
 # LTS Image runner.
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
 
+# Create app directory inside the image.
+WORKDIR /app
+
 # Install su-exec utility (Alpine doesn't have it by default).
 RUN apk add --no-cache su-exec
 
@@ -38,11 +42,12 @@ RUN corepack enable && \
   chown -R node:node /home/node/.cache && \
   # Enable and prepare corepack AS the node user.
   su-exec node corepack enable && \
-  su-exec node corepack prepare pnpm@10.23.0 --activate
+  su-exec node corepack prepare pnpm@11.11.0 --activate
 
 # To bundle the app's source code inside the Docker image.
 COPY --chown=node:node --from=builder /app/package.json ./
 COPY --chown=node:node --from=builder /app/pnpm-lock.yaml ./
+COPY --chown=node:node --from=builder /app/pnpm-workspace.yaml ./
 COPY --chown=node:node --from=builder /app/config ./config
 COPY --chown=node:node --from=builder /app/build ./build
 COPY --chown=node:node --from=builder /app/src/app/specs ./build/app/specs

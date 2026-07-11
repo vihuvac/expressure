@@ -1,29 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2022",
+    "target": "es2024",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "module": "commonjs",
-    "moduleResolution": "node",
-    "baseUrl": ".",
+    "moduleResolution": "bundler",
     "types": ["jest", "node"],
     "paths": {
-      "@constants": ["src/app/constants"],
-      "@constants/*": ["src/app/constants/*"],
-      "@controllers": ["src/app/controllers"],
-      "@controllers/*": ["src/app/controllers/*"],
-      "@helpers": ["src/app/helpers"],
-      "@helpers/*": ["src/app/helpers/*"],
-      "@libs": ["src/app/libs"],
-      "@libs/*": ["src/app/libs/*"],
-      "@middlewares": ["src/app/middlewares"],
-      "@middlewares/*": ["src/app/middlewares/*"],
-      "@services": ["src/app/services"],
-      "@services/*": ["src/app/services/*"],
-      "@mocks": ["src/tests/mocks"],
-      "@mocks/*": ["src/tests/mocks/*"],
+      "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
+    "rootDir": "./src",
     "outDir": "./build",
     "isolatedModules": true,
     "esModuleInterop": true,
@@ -36,6 +23,13 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true
   },
-  "include": ["**/*.js", "**/*.mjs", "**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src/app.ts", "src/app/**/*.ts"],
+  "exclude": ["node_modules", "src/tests/**"],
+  "tsc-alias": {
+    "replacers": {
+      "base-url": {
+        "enabled": false
+      }
+    }
+  }
 }

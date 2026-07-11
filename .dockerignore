@@ -4,14 +4,18 @@
 # Whitelist application code
 !package*.json
 !pnpm-lock.yaml
+!pnpm-workspace.yaml
 !tsconfig.json
-!types.d.ts
+!@types/
 !src/
 !config/
 
 # Whitelist development tools
 !.eslintrc
+!eslint.config.*
 !jest.config.*
+!jest.setup.*
+!nodemon.json
 !.prettierrc*
 !.jsdoc*
 !.lintstagedrc
