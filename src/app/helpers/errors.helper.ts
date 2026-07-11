@@ -1,10 +1,10 @@
 /**
  * Required Modules.
  */
-
-import { errorsDictionary } from '@helpers/dictionaries.helper';
 import type { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+
+import { errorsDictionary } from '@/app/helpers/dictionaries.helper';
 
 type ErrorResponseCode = {
   statusCode: number;
@@ -48,9 +48,9 @@ export class CustomError extends Error {
  * @return {CustomErrorObject} Standardized error response.
  */
 const defaultError = (error: unknown): CustomErrorObject => {
-  const err = error as { statusCode?: number; message?: string };
+  const err = error as { statusCode?: number; status?: number; message?: string };
   return {
-    statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
+    statusCode: err.statusCode || err.status || StatusCodes.INTERNAL_SERVER_ERROR,
     message: err.message || 'Internal server error.',
   };
 };

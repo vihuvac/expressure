@@ -1,10 +1,11 @@
 /**
  * Required Modules.
  */
-import { type CustomErrorObject, errorHandler } from '@helpers';
-import { logger } from '@libs';
 import type { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+
+import { type CustomErrorObject, errorHandler } from '@/app/helpers/errors.helper';
+import { logger } from '@/app/libs/logger.lib';
 
 type HandledError = CustomErrorObject & {
   code?: string;
@@ -24,13 +25,19 @@ type HandledError = CustomErrorObject & {
  */
 export const handleErrors = (
   error: HandledError,
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction,
 ) => {
   logger.error({
     message: 'The errors handler middleware was triggered.',
     error,
+    request: {
+      method: req.method,
+      path: req.path,
+      query: req.query,
+      body: req.body,
+    },
   });
 
   // Handle and customize non-API routes. `OpenApiValidator` bubbles up the respective error.
