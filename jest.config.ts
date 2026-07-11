@@ -4,21 +4,20 @@
  */
 import type { Config } from 'jest';
 
+const isCi = process.env.CI === 'true';
+
 // Export jest settings.
 const config: Config = {
   preset: 'ts-jest',
   testMatch: ['**/?(*.)test.ts'],
+  // Recycle workers before RSS spikes cause OOM on small CI runners (see jest-debug logs).
+  ...(isCi ? { workerIdleMemoryLimit: '512MB' as const } : {}),
   moduleNameMapper: {
-    '^@constants(.*)$': '<rootDir>/src/app/constants/$1',
-    '^@controllers(.*)$': '<rootDir>/src/app/controllers/$1',
-    '^@helpers(.*)$': '<rootDir>/src/app/helpers/$1',
-    '^@libs(.*)$': '<rootDir>/src/app/libs/$1',
-    '^@middlewares(.*)$': '<rootDir>/src/app/middlewares/$1',
-    '^@services(.*)$': '<rootDir>/src/app/services/$1',
-    '^@mocks(.*)$': '<rootDir>/src/tests/mocks/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
-  verbose: true,
+  verbose: !isCi,
   collectCoverage: true,
+  coverageProvider: 'v8',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   collectCoverageFrom: ['**/*.{ts,tsx}'],
   testPathIgnorePatterns: ['/(config|docs|node_modules)/'],
@@ -38,6 +37,14 @@ const config: Config = {
   ],
   coverageDirectory: '<rootDir>/src/tests/coverage/',
   testResultsProcessor: 'jest-sonar-reporter',
+  // Critical for speed
+  maxWorkers: isCi ? 1 : '50%',
+  testTimeout: isCi ? 30_000 : 10_000,
+  // Only run changed files in watch mode
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
 };
 
 export default config;
