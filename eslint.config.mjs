@@ -49,7 +49,7 @@ const eslintConfig = [
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        ecmaVersion: 2022,
+        ecmaVersion: 2024,
         sourceType: 'module',
         project: ['./tsconfig.json'],
       },
@@ -112,7 +112,7 @@ const eslintConfig = [
       'import/prefer-default-export': 'off',
     },
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: 2024,
       sourceType: 'module',
       globals: {
         node: true,
@@ -126,13 +126,7 @@ const eslintConfig = [
         },
         alias: {
           map: [
-            ['@constants', './src/app/constants'],
-            ['@controllers', './src/app/controllers'],
-            ['@helpers', './src/app/helpers'],
-            ['@libs', './src/app/libs'],
-            ['@middlewares', './src/app/middlewares'],
-            ['@services', './src/app/services'],
-            ['@mocks', './src/tests/mocks'],
+            ['@', './src'],
           ],
           extensions: ['.ts'],
         },
