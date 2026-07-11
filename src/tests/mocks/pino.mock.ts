@@ -43,7 +43,7 @@ export type GlobalMocks = {
  * @returns {MockPino} A mock Pino logger with all key methods and destination mocked.
  *
  * @example
- * import { createMockPino } from '@mocks/pino.mock';
+ * import { createMockPino } from '@/tests/mocks/pino.mock';
  *
  * const logger = createMockPino();
  * logger.info('Hello world');

@@ -1,8 +1,9 @@
 /**
  * Required Modules.
  */
-import type { GlobalMocks } from '@mocks/pino.mock';
 import httpContext from 'express-http-context';
+
+import type { GlobalMocks } from '@/tests/mocks/pino.mock';
 
 /**
  * @func getGlobalMocks

@@ -1,15 +1,15 @@
 /**
  * Required modules.
  */
-import { errorHandler } from '@helpers';
-import { logger } from '@libs';
-
-import { handleErrors } from '@middlewares/errors.middleware';
 import { StatusCodes } from 'http-status-codes';
 import { createRequest, createResponse } from 'node-mocks-http';
 
-jest.mock('@libs/logger.lib');
-jest.mock('@helpers/errors.helper');
+import { errorHandler } from '@/app/helpers/errors.helper';
+import { logger } from '@/app/libs/logger.lib';
+import { handleErrors } from '@/app/middlewares/errors.middleware';
+
+jest.mock('@/app/libs/logger.lib');
+jest.mock('@/app/helpers/errors.helper');
 
 describe('Testing Errors Middleware', () => {
   afterEach(() => {

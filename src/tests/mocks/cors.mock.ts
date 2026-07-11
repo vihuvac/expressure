@@ -1,10 +1,11 @@
 /**
  * Required Modules.
  */
-import { getCorsMiddleware } from '@middlewares/cors.middleware';
 import config from 'config';
 import type { CorsOptions } from 'cors';
 import cors from 'cors';
+
+import { getCorsMiddleware } from '@/app/middlewares/cors.middleware';
 
 /**
  * @callback CustomOrigin

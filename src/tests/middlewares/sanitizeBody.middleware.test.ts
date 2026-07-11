@@ -1,10 +1,11 @@
 /**
  * Required modules.
  */
-import { sanitizeBody } from '@middlewares/sanitizeBody.middleware';
 import type { NextFunction, Request } from 'express';
 import { createRequest, createResponse, type MockRequest } from 'node-mocks-http';
 import xss from 'xss';
+
+import { sanitizeBody } from '@/app/middlewares/sanitizeBody.middleware';
 
 jest.mock('xss', () => jest.fn((input: string) => `sanitized(${input})`));
 
