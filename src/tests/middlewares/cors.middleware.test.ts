@@ -1,16 +1,17 @@
 /**
  * Required Modules.
  */
-import { getCorsMiddleware } from '@middlewares/cors.middleware';
+import type { CorsOptions } from 'cors';
+import { StatusCodes } from 'http-status-codes';
+
+import { getCorsMiddleware, isOriginAllowed } from '@/app/middlewares/cors.middleware';
 import {
   type CustomOrigin,
   invokeOrigin,
   mockConfig,
   mockCors,
   setupCorsMock,
-} from '@mocks/cors.mock';
-import type { CorsOptions } from 'cors';
-import { StatusCodes } from 'http-status-codes';
+} from '@/tests/mocks/cors.mock';
 
 jest.mock('config');
 jest.mock('cors');
@@ -28,6 +29,30 @@ describe('CORS Middleware', () => {
     process.env.NODE_ENV = originalEnv;
   });
 
+  // #region isOriginAllowed
+  describe('isOriginAllowed', () => {
+    it('allows an exact string match', () => {
+      expect(isOriginAllowed('https://allowed.com', ['https://allowed.com'])).toBe(true);
+    });
+
+    it('allows a RegExp match', () => {
+      expect(isOriginAllowed('https://app.example.com', [/^https:\/\/.+\.example\.com$/])).toBe(
+        true,
+      );
+    });
+
+    it('denies when nothing matches', () => {
+      expect(isOriginAllowed('https://evil.com', ['https://allowed.com', /^https:\/\/app\./])).toBe(
+        false,
+      );
+    });
+
+    it('denies when the whitelist is empty', () => {
+      expect(isOriginAllowed('https://any.com', [])).toBe(false);
+    });
+  });
+  // #endregion
+
   // #region CORS middleware factory
   describe('corsMiddleware factory', () => {
     it('should configure CORS with correct options', () => {
@@ -42,7 +67,7 @@ describe('CORS Middleware', () => {
       };
 
       // Assert
-      expect(options.methods).toEqual(['GET', 'PUT', 'PATCH', 'POST', 'DELETE']);
+      expect(options.methods).toEqual(['GET', 'PUT', 'PATCH', 'POST', 'DELETE', 'HEAD']);
       expect(options.allowedHeaders).toEqual([
         'Accept',
         'Authorization',
@@ -74,7 +99,7 @@ describe('CORS Middleware', () => {
       expect(callback).toHaveBeenCalledWith(null, true);
     });
 
-    it('should deny requests without origin in production environment', () => {
+    it('should allow requests without origin in production environment', () => {
       // Arrange
       process.env.NODE_ENV = 'production';
       mockConfig.get.mockReturnValue(['https://allowed.com']);
@@ -84,8 +109,7 @@ describe('CORS Middleware', () => {
       const callback = invokeOrigin(undefined, options);
 
       // Assert
-      expect(callback).toHaveBeenCalledWith(expect.any(Error));
-      expect(callback.mock.calls[0][0].message).toBe("Origin 'undefined' not allowed by CORS.");
+      expect(callback).toHaveBeenCalledWith(null, true);
     });
 
     it('should allow origin that matches exact string in whitelist', () => {

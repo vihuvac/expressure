@@ -1,11 +1,12 @@
 /**
  * Required modules.
  */
-import { checkLiveness, checkReadiness } from '@controllers/healthChecks.controller';
 import { StatusCodes } from 'http-status-codes';
 import { createRequest, createResponse } from 'node-mocks-http';
 
-jest.mock('@helpers/errors.helper');
+import { checkLiveness, checkReadiness } from '@/app/controllers/healthChecks.controller';
+
+jest.mock('@/app/helpers/errors.helper');
 
 describe('Testing the health controller', () => {
   afterEach(() => {
@@ -15,11 +16,11 @@ describe('Testing the health controller', () => {
   describe('Check the microservice liveness', () => {
     it('Must return a status OK', async () => {
       // Arrange
-      const status = 'ok';
+      const message = 'The API is alive and running.';
       const mockResponse = {
         statusCode: StatusCodes.OK,
         data: {
-          status,
+          message,
         },
       };
 
@@ -34,21 +35,21 @@ describe('Testing the health controller', () => {
       expect(res._getStatusCode()).toBe(mockResponse.statusCode);
       expect(res._getData()).toEqual(
         expect.objectContaining({
-          status: expect.any(String),
+          message: expect.any(String),
         }),
       );
-      expect(res._getData().status).toBe(mockResponse.data.status);
+      expect(res._getData().message).toBe(mockResponse.data.message);
     });
   });
 
   describe('Check the microservice readiness', () => {
     it('Must return a status OK', async () => {
       // Arrange
-      const status = 'ok';
+      const message = 'The API is ready to handle requests.';
       const mockResponse = {
         statusCode: StatusCodes.OK,
         data: {
-          status,
+          message,
         },
       };
 
@@ -63,10 +64,10 @@ describe('Testing the health controller', () => {
       expect(res._getStatusCode()).toBe(mockResponse.statusCode);
       expect(res._getData()).toEqual(
         expect.objectContaining({
-          status: expect.any(String),
+          message: expect.any(String),
         }),
       );
-      expect(res._getData().status).toBe(mockResponse.data.status);
+      expect(res._getData().message).toBe(mockResponse.data.message);
     });
   });
 });

@@ -1,8 +1,8 @@
 /**
  * Required Modules.
  */
-import { logger } from '@libs/logger.lib';
-import { getGlobalMocks, mockPinoLogger, setHttpContext } from '@mocks/logger.mock';
+import { logger, resolveLogLevel } from '@/app/libs/logger.lib';
+import { getGlobalMocks, mockPinoLogger, setHttpContext } from '@/tests/mocks/logger.mock';
 
 jest.mock('date-fns', () => ({
   format: jest.fn(() => '2023-01-01 12:00:00.000'),
@@ -11,8 +11,6 @@ jest.mock('date-fns', () => ({
 jest.mock('express-http-context');
 
 describe('logger.lib', () => {
-  const originalNodeEnv = process.env.NODE_ENV;
-
   beforeEach(() => {
     // Clear only the mockPinoLogger method calls, NOT pinoFactory calls
     // pinoFactory calls happen during module load and should be preserved
@@ -23,9 +21,23 @@ describe('logger.lib', () => {
     setHttpContext(undefined);
   });
 
-  afterEach(() => {
-    process.env.NODE_ENV = originalNodeEnv;
+  // #region resolveLogLevel
+  describe('resolveLogLevel', () => {
+    it('returns info for production', () => {
+      expect(resolveLogLevel('production')).toBe('info');
+    });
+
+    it('returns debug for non-production environments', () => {
+      expect(resolveLogLevel('development')).toBe('debug');
+      expect(resolveLogLevel('test')).toBe('debug');
+      expect(resolveLogLevel('staging')).toBe('debug');
+    });
+
+    it('returns debug when environment is undefined', () => {
+      expect(resolveLogLevel(undefined)).toBe('debug');
+    });
   });
+  // #endregion
 
   // #region logger.info Tests
   describe('logger.info', () => {
@@ -203,7 +215,15 @@ describe('logger.lib', () => {
 
       // Assert
       expect(mockPinoLogger.error).toHaveBeenCalledWith(
-        { url: input.url, method: input.method, error },
+        {
+          url: input.url,
+          method: input.method,
+          error: {
+            type: 'Error',
+            message: 'Network timeout',
+            stack: expect.any(String),
+          },
+        },
         'API call failed',
       );
     });
@@ -217,7 +237,15 @@ describe('logger.lib', () => {
       logger.error(input);
 
       // Assert
-      expect(mockPinoLogger.error).toHaveBeenCalledWith({ code: 401, path: '/auth', error });
+      expect(mockPinoLogger.error).toHaveBeenCalledWith({
+        code: 401,
+        path: '/auth',
+        error: {
+          type: 'Error',
+          message: 'Invalid token',
+          stack: expect.any(String),
+        },
+      });
     });
 
     it('logs non-Error error field', () => {
@@ -229,7 +257,13 @@ describe('logger.lib', () => {
       logger.error(input);
 
       // Assert
-      expect(mockPinoLogger.error).toHaveBeenCalledWith({ context: 'signup', error });
+      expect(mockPinoLogger.error).toHaveBeenCalledWith({
+        context: 'signup',
+        error: {
+          code: 'VALIDATION_ERROR',
+          details: ['email required'],
+        },
+      });
     });
   });
   // #endregion
@@ -317,10 +351,9 @@ describe('logger.lib', () => {
       );
     });
 
-    it('applies correct log level based on NODE_ENV', () => {
+    it('uses resolveLogLevel for the configured pino level', () => {
       // Arrange
       const factory = getGlobalMocks().__PINO_FACTORY__;
-      const expectedLevel = process.env.NODE_ENV === 'production' ? 'info' : 'debug';
       const config = factory.mock.calls[0]?.[0];
 
       // Act
@@ -328,8 +361,8 @@ describe('logger.lib', () => {
         throw new Error('Could not find pino configuration in mock calls');
       }
 
-      // Assert
-      expect(config.level).toBe(expectedLevel);
+      // Assert — singleton is wired through the pure helper
+      expect(config.level).toBe(resolveLogLevel(process.env.NODE_ENV));
     });
 
     it('timestamp function returns formatted time', () => {

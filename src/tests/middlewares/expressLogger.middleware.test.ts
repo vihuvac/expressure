@@ -1,10 +1,17 @@
 /**
  * Required modules.
  */
-import { expressLogger } from '@middlewares/expressLogger.middleware';
-import { createMockRequest, createMockResponse } from '@mocks/express.mock';
 import type { Request, Response } from 'express';
 import httpContext from 'express-http-context';
+
+import { expressLogger } from '@/app/middlewares/expressLogger.middleware';
+import { createMockRequest, createMockResponse } from '@/tests/mocks/express.mock';
+
+type CustomProps = {
+  type: string;
+  route: string;
+  error?: Error;
+};
 
 type CapturedValues = {
   logLevel?: string;
@@ -13,7 +20,7 @@ type CapturedValues = {
   serializedErr?: Record<string, unknown>;
   successMessage?: string;
   errorMessage?: string;
-  customProps?: Record<string, unknown>;
+  customProps?: CustomProps;
 };
 
 let capturedValues: CapturedValues = {};
@@ -51,7 +58,12 @@ jest.mock('pino-http', () =>
 
     // Execute customProps
     if (config.customProps) {
-      capturedValues.customProps = config.customProps(req, res);
+      const props = config.customProps(req, res);
+      capturedValues.customProps = {
+        type: String(props.type),
+        route: String(props.route),
+        ...(props.error instanceof Error ? { error: props.error } : {}),
+      };
 
       // Test customSuccessMessage and customErrorMessage
       if (res.statusCode < 400 && config.customSuccessMessage) {
@@ -70,7 +82,7 @@ jest.mock('express-http-context', () => ({
   get: jest.fn(),
 }));
 
-jest.mock('@libs', () => ({
+jest.mock('@/app/libs/logger.lib', () => ({
   pinoLogger: {
     info: jest.fn(),
     error: jest.fn(),
@@ -551,7 +563,9 @@ describe('Express Logger Middleware', () => {
           route: '/test',
           error: expect.any(Error),
         });
-        expect((capturedValues.customProps?.error as Error).message).toBe('Request failed');
+        expect(capturedValues.customProps).toMatchObject({
+          error: { message: 'Request failed' },
+        });
         expect(next).toHaveBeenCalled();
       });
 
@@ -572,8 +586,14 @@ describe('Express Logger Middleware', () => {
         expressLogger(request, response, next);
 
         // Assert
-        expect(capturedValues.customProps?.error).toBeInstanceOf(Error);
-        expect((capturedValues.customProps?.error as Error).message).toBe('Internal Server Error');
+        expect(capturedValues.customProps).toEqual({
+          type: 'http_request',
+          route: '/test',
+          error: expect.any(Error),
+        });
+        expect(capturedValues.customProps).toMatchObject({
+          error: { message: 'Internal Server Error' },
+        });
         expect(next).toHaveBeenCalled();
       });
 
@@ -597,7 +617,7 @@ describe('Express Logger Middleware', () => {
           type: 'http_request',
           route: '/test',
         });
-        expect(capturedValues.customProps?.error).toBeUndefined();
+        expect(capturedValues.customProps).not.toHaveProperty('error');
         expect(next).toHaveBeenCalled();
       });
     });
