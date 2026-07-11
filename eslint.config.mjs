@@ -51,7 +51,9 @@ const eslintConfig = [
       parserOptions: {
         ecmaVersion: 2024,
         sourceType: 'module',
-        project: ['./tsconfig.json'],
+        // Lint-only project includes tests; build tsconfig excludes them.
+        project: ['./tsconfig.eslint.json'],
+        tsconfigRootDir: __dirname,
       },
     },
     plugins: {
