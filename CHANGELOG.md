@@ -6,6 +6,37 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-11
+
+There is not a specific ticket for these changes.
+
+### Added
+
+- `pnpm-workspace.yaml` for pnpm 11 settings (`allowBuilds`, dependency overrides).
+- Pure helpers `resolveLogLevel` and `isOriginAllowed` for testable logger and CORS logic.
+- Jest scripts for CI and watch workflows (`test:ci`, `test:watch`, `test:watch:changed`).
+- `jest-watch-typeahead` for faster interactive test filtering.
+- `ENABLE_API_DOCS` documented in `.env.template`.
+
+### Changed
+
+- Upgraded the toolchain to Node.js 24.18.0, pnpm 11.11.0, TypeScript 6.0.3, and ESLint 9.39.x.
+- Updated runtime dependencies: `config` 4.4.2, `cors` 2.8.6, `date-fns` 4.4.0,
+  `express-openapi-validator` 5.6.2, `helmet` 8.2.0, `js-yaml` 5.2.1, `module-alias` 2.3.4,
+  `pino` 10.3.1, and `swagger-client` 3.37.5.
+- Updated development dependencies: `@typescript-eslint/*` 8.63.0, `eslint` 9.39.4,
+  `eslint-plugin-jest` 29.15.4, `jest` 30.4.2, `lint-staged` 17.0.8, `nodemon` 3.1.14,
+  `prettier` 3.9.5, `ts-jest` 29.4.11, `tsc-alias` 1.9.0, and related tooling packages.
+- Unified path aliases to `@/*` (TypeScript `paths`, Jest `moduleNameMapper`, and `module-alias`).
+- Migrated TypeScript config off deprecated `moduleResolution: "node"` / `baseUrl` to
+  `moduleResolution: "bundler"` with self-contained `paths`.
+- Removed barrel `index.ts` re-exports under `src/app/*` in favor of direct `@/app/...` imports.
+- Removed deprecated `@types/config` (the `config` package ships its own types).
+- Hardened Docker builds: Node/Alpine/pnpm bumps, copy `pnpm-workspace.yaml`, and expand
+  `.dockerignore` whitelists for workspace and tooling files.
+- Improved Jest defaults (V8 coverage, parallel workers locally, CI memory limits, typeahead watch plugins).
+- Raised unit-test coverage to 100% across application source files.
+
 ## [1.0.4] - 2025-12-20
 
 There is not a specific ticket for these changes.
