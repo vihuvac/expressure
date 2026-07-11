@@ -10,7 +10,7 @@
       "@/*": ["./src/*"]
     },
     "resolveJsonModule": true,
-    "rootDir": ".",
+    "rootDir": "./src",
     "outDir": "./build",
     "isolatedModules": true,
     "esModuleInterop": true,
@@ -23,8 +23,8 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true
   },
-  "include": ["**/*.mjs", "**/*.ts"],
-  "exclude": ["node_modules"],
+  "include": ["src/app.ts", "src/app/**/*.ts"],
+  "exclude": ["node_modules", "src/tests/**"],
   "tsc-alias": {
     "replacers": {
       "base-url": {

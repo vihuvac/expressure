@@ -29,6 +29,9 @@ RUN pnpm run build
 # LTS Image runner.
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION}
 
+# Create app directory inside the image.
+WORKDIR /app
+
 # Install su-exec utility (Alpine doesn't have it by default).
 RUN apk add --no-cache su-exec
 
@@ -44,6 +47,7 @@ RUN corepack enable && \
 # To bundle the app's source code inside the Docker image.
 COPY --chown=node:node --from=builder /app/package.json ./
 COPY --chown=node:node --from=builder /app/pnpm-lock.yaml ./
+COPY --chown=node:node --from=builder /app/pnpm-workspace.yaml ./
 COPY --chown=node:node --from=builder /app/config ./config
 COPY --chown=node:node --from=builder /app/build ./build
 COPY --chown=node:node --from=builder /app/src/app/specs ./build/app/specs
